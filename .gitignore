@@ -1,0 +1,18 @@
+# 私人文件和配置
+*.txt
+*.md
+claude.md
+README.md
+nums.txt
+tactilevla.txt
+
+# Python脚本
+create_placeholder_images.py
+
+# Claude配置
+.claude/
+
+# 临时文件
+*.tmp
+*.log
+.DS_Store

@@ -1,0 +1,1328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thermo-VLA: Thermal-Aware Vision-Language-Action Models</title>
+    <meta name="description" content="Thermo-VLA introduces gated residual fusion for thermal-aware Vision-Language-Action robotic manipulation.">
+
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Thermo-VLA">
+    <meta property="og:description" content="Thermal-aware Vision-Language-Action models with gated residual fusion for robotic manipulation.">
+
+    <meta property="twitter:card" content="summary">
+    <meta property="twitter:title" content="Thermo-VLA">
+    <meta property="twitter:description" content="Thermal-aware Vision-Language-Action models with gated residual fusion for robotic manipulation.">
+
+    <link rel="stylesheet" type="text/css" media="all" href="clarity-template/assets/stylesheets/main_free.css">
+    <link rel="stylesheet" type="text/css" media="all" href="clarity-template/clarity/clarity.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/foundation.min.css">
+    <link href="clarity-template/assets/fontawesome-free-6.6.0-web/css/all.min.css" rel="stylesheet">
+
+    <style>
+        :root {
+            --ink: #182331;
+            --muted: #637180;
+            --line: #d9e1e7;
+            --band: #f6f8f8;
+            --warm: #c9492d;
+            --cool: #126c94;
+            --gold: #d99b26;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            color: var(--ink);
+            background: #fbfbf8;
+        }
+
+        .hero {
+            background: linear-gradient(90deg, hsla(298, 68%, 90%, 1) 0%, hsla(30, 82%, 91%, 1) 100%);
+            border-bottom: 1px solid rgba(24, 35, 49, 0.08);
+        }
+
+        .hero .blog-title {
+            padding-bottom: 2.5rem;
+        }
+
+        .paper-kicker {
+            color: var(--cool);
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+        }
+
+        .title {
+            color: var(--ink);
+            font-size: 3.6rem;
+            line-height: 1.04;
+            margin: 0 0 1rem 0;
+        }
+
+        .logo-title img {
+            display: block;
+            height: auto;
+            margin: 0 auto;
+            max-width: min(520px, 90%);
+        }
+
+        .subtitle {
+            color: #34495a;
+            font-size: 1.45rem;
+            font-weight: 400;
+            line-height: 1.4;
+            margin: 0 auto 1.5rem auto;
+            max-width: 980px;
+        }
+
+        .author {
+            color: #354355;
+            font-size: 1.02rem;
+            line-height: 1.6;
+            margin: 0 0 1.5rem 0;
+        }
+
+        .abstract {
+            color: #293746;
+            font-size: 1rem;
+            line-height: 1.7;
+            margin: 1.8rem auto 2rem auto;
+            max-width: 980px;
+            text-align: justify;
+            text-justify: inter-word;
+        }
+
+        .abstract p {
+            margin: 0;
+        }
+
+        .abstract p + p {
+            margin-top: 0.85rem;
+        }
+
+        .button.icon {
+            border: 1px solid rgba(24, 35, 49, 0.16);
+            border-radius: 6px;
+            color: var(--ink);
+            margin: 0.25rem 0.35rem 0.25rem 0;
+        }
+
+        .hero .button.icon {
+            background: rgba(255, 255, 255, 0.56);
+        }
+
+        .hero .button.icon:hover,
+        .button.icon:hover {
+            background: rgba(18, 108, 148, 0.1);
+        }
+
+        .hero-links {
+            align-items: flex-start;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            justify-content: center;
+        }
+
+        div.container.blog#first-content div.blog-title.no-cover .info.hero-links {
+            justify-content: center;
+            gap: 0.8rem;
+        }
+
+        .hero-link-item {
+            align-items: center;
+            display: flex;
+            flex-direction: column;
+            padding-bottom: 0.98rem;
+            position: relative;
+        }
+
+        .hero-link-item .button.icon {
+            margin: 0;
+        }
+
+        .link-status {
+            color: #667585;
+            font-size: 0.72rem;
+            line-height: 1;
+            left: 50%;
+            margin-top: 0;
+            position: absolute;
+            top: calc(100% - 0.7rem);
+            transform: translateX(-50%);
+            white-space: nowrap;
+        }
+
+        .section-band {
+            background: var(--band);
+            border-bottom: 1px solid rgba(24, 35, 49, 0.07);
+            border-top: 1px solid rgba(24, 35, 49, 0.07);
+        }
+
+        .main h1 {
+            color: var(--ink);
+            font-size: 2rem;
+            margin-top: 0.5rem;
+        }
+
+        .main h2 {
+            color: #253548;
+            font-size: 1.35rem;
+            margin-top: 2rem;
+        }
+
+        .text {
+            color: #314051;
+            font-size: 1rem;
+            line-height: 1.7;
+            text-align: justify;
+            text-justify: inter-word;
+        }
+
+        .review-notice {
+            background: #fff7ec;
+            border: 1px solid rgba(217, 155, 38, 0.36);
+            border-left: 4px solid var(--gold);
+            border-radius: 8px;
+            color: #2f3e4d;
+            font-size: 1rem;
+            line-height: 1.65;
+            margin: 1rem 0 2rem 0;
+            padding: 1rem 1.1rem;
+        }
+
+        .review-notice strong {
+            color: var(--ink);
+            display: block;
+            font-family: "Poppins", sans-serif;
+            font-size: 0.95rem;
+            margin-bottom: 0.35rem;
+        }
+
+        .review-notice p {
+            margin: 0;
+        }
+
+        .contribution-grid {
+            display: grid;
+            gap: 1rem;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            margin: 2rem 0;
+        }
+
+        .contribution {
+            background: #fff;
+            border: 1px solid var(--line);
+            border-left: 4px solid var(--cool);
+            border-radius: 8px;
+            padding: 1.2rem 1.25rem;
+        }
+
+        .contribution:nth-child(2) {
+            border-left-color: var(--warm);
+        }
+
+        .contribution:nth-child(3) {
+            border-left-color: var(--gold);
+        }
+
+        .contribution h3 {
+            color: var(--ink);
+            font-size: 0.95rem;
+            margin: 0 0 0.65rem 0;
+        }
+
+        .contribution p {
+            color: #435164;
+            font-size: 0.95rem;
+            line-height: 1.55;
+            margin: 0;
+            text-align: left;
+        }
+
+        .demo-shell {
+            margin: 1.5rem auto 0 auto;
+            max-width: 980px;
+        }
+
+        .demo-note {
+            color: var(--muted);
+            font-size: 0.95rem;
+            line-height: 1.5;
+            margin: 0.25rem auto 1rem auto;
+            max-width: 980px;
+            text-align: left;
+        }
+
+        .demo-video-frame {
+            aspect-ratio: 16 / 9;
+            background: #fff;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            box-shadow: 0 10px 34px rgba(24, 35, 49, 0.12);
+            overflow: hidden;
+            width: 100%;
+        }
+
+        .demo-video-frame video {
+            background: #fff;
+            cursor: zoom-in;
+            display: block;
+            height: 100%;
+            object-fit: contain;
+            width: 100%;
+        }
+
+        .demo-selector-row {
+            align-items: flex-start;
+            display: flex;
+            gap: 0.75rem;
+            justify-content: center;
+            margin-left: auto;
+            margin-right: auto;
+            max-width: 980px;
+        }
+
+        .demo-selector-row + .demo-selector-row {
+            margin-top: 0.65rem;
+        }
+
+        .demo-selector-label {
+            color: var(--muted);
+            flex: 0 0 5.2rem;
+            font-family: "Poppins", sans-serif;
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            line-height: 2.35rem;
+            text-align: right;
+            text-transform: uppercase;
+        }
+
+        .demo-tabs {
+            display: flex;
+            flex: 1 1 auto;
+            flex-wrap: wrap;
+            gap: 0.45rem;
+            justify-content: flex-start;
+        }
+
+        .demo-selector-panel {
+            margin-bottom: 0.55rem;
+        }
+
+        .demo-prompt-row {
+            align-items: center;
+        }
+
+        .demo-prompt-row .demo-selector-label {
+            line-height: 1.2;
+        }
+
+        .demo-prompt-box {
+            background: rgba(255, 255, 255, 0.78);
+            border: 1px solid var(--line);
+            border-radius: 6px;
+            color: var(--cool);
+            flex: 1 1 auto;
+            font-family: "Poppins", "Source Sans Pro", sans-serif;
+            font-size: 0.86rem;
+            font-weight: 500;
+            letter-spacing: 0.01em;
+            line-height: 1.2;
+            min-height: 1.4rem;
+            padding: 0.32rem 0.85rem;
+            text-align: left;
+            white-space: pre-wrap;
+        }
+
+        .demo-prompt-box.generalization-case {
+            color: #8a5d0b;
+        }
+
+        .demo-legend {
+            align-items: center;
+            color: var(--muted);
+            display: flex;
+            flex-wrap: wrap;
+            font-size: 0.78rem;
+            gap: 0.75rem;
+            justify-content: center;
+            margin: 0.45rem 0 1rem 0;
+        }
+
+        .demo-legend span {
+            align-items: center;
+            display: inline-flex;
+            gap: 0.32rem;
+        }
+
+        .demo-legend span::before {
+            border-radius: 999px;
+            content: "";
+            display: inline-block;
+            height: 0.52rem;
+            width: 0.52rem;
+        }
+
+        .demo-legend-primary::before {
+            background: var(--cool);
+        }
+
+        .demo-legend-generalization::before {
+            background: var(--gold);
+        }
+
+        .demo-tab {
+            background: #fff;
+            border: 1px solid var(--line);
+            border-radius: 6px;
+            color: #2c3b4d;
+            cursor: pointer;
+            font-family: "Poppins", sans-serif;
+            font-size: 0.72rem;
+            font-weight: 700;
+            line-height: 1.2;
+            max-width: 220px;
+            overflow-wrap: anywhere;
+            padding: 0.55rem 0.75rem;
+            transition: background 0.16s ease, border-color 0.16s ease, color 0.16s ease;
+        }
+
+        .demo-task-tab {
+            min-width: 82px;
+        }
+
+        .demo-option-tab {
+            min-width: 70px;
+            text-transform: none;
+        }
+
+        .demo-option-tab.primary-case {
+            border-color: rgba(18, 108, 148, 0.32);
+            color: var(--cool);
+        }
+
+        .demo-option-tab.generalization-case {
+            border-color: rgba(217, 155, 38, 0.42);
+            color: #8a5d0b;
+        }
+
+        .demo-tab:hover {
+            background: rgba(18, 108, 148, 0.08);
+            border-color: rgba(18, 108, 148, 0.28);
+        }
+
+        .demo-option-tab.generalization-case:hover {
+            background: rgba(217, 155, 38, 0.12);
+            border-color: rgba(217, 155, 38, 0.62);
+        }
+
+        .demo-tab.active {
+            background: var(--cool);
+            border-color: var(--cool);
+            color: #fff;
+        }
+
+        .demo-option-tab.generalization-case.active {
+            background: var(--gold);
+            border-color: var(--gold);
+            color: #fff;
+        }
+
+        .demo-empty {
+            color: var(--muted);
+            font-size: 0.95rem;
+            margin: 1rem 0 0 0;
+            text-align: center;
+        }
+
+        .additional-demo-grid {
+            display: grid;
+            gap: 0.85rem;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            margin: 1.15rem 0 2rem 0;
+        }
+
+        .additional-demo-card {
+            aspect-ratio: 16 / 9;
+            background: #fff;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            cursor: zoom-in;
+            overflow: hidden;
+        }
+
+        .additional-demo-card video {
+            background: #fff;
+            cursor: zoom-in;
+            display: block;
+            height: 100%;
+            object-fit: contain;
+            width: 100%;
+        }
+
+        .additional-demo-card-lower video {
+            object-fit: cover;
+            object-position: center center;
+            transform: none;
+        }
+
+        .video-modal {
+            align-items: center;
+            background: rgba(7, 12, 18, 0.84);
+            display: flex;
+            inset: 0;
+            justify-content: center;
+            padding: 4vh 4vw;
+            position: fixed;
+            z-index: 1000;
+        }
+
+        .video-modal[hidden] {
+            display: none;
+        }
+
+        .video-modal-content {
+            max-width: 1120px;
+            position: relative;
+            width: 100%;
+        }
+
+        .video-modal video {
+            background: #000;
+            border-radius: 8px;
+            display: block;
+            max-height: 86vh;
+            object-fit: contain;
+            width: 100%;
+        }
+
+        .video-modal.video-modal-natural .video-modal-content {
+            max-width: 96vw;
+            width: auto;
+        }
+
+        .video-modal.video-modal-natural video {
+            height: auto;
+            max-width: 96vw;
+            width: auto;
+        }
+
+        .video-modal-close {
+            align-items: center;
+            background: rgba(255, 255, 255, 0.92);
+            border: 0;
+            border-radius: 999px;
+            color: var(--ink);
+            cursor: pointer;
+            display: inline-flex;
+            font-size: 1rem;
+            height: 2rem;
+            justify-content: center;
+            padding: 0;
+            position: absolute;
+            right: -0.75rem;
+            top: -0.75rem;
+            width: 2rem;
+        }
+
+        .figure-shell {
+            background: #fff;
+            border: 0;
+            border-radius: 0;
+            overflow: hidden;
+            position: relative;
+            width: 100%;
+        }
+
+        .figure-image {
+            background: #fff;
+            border: 0;
+            display: block;
+            height: 100%;
+            object-fit: contain;
+            width: 100%;
+        }
+
+        .figure-overview {
+            aspect-ratio: 606.941 / 192;
+        }
+
+        .figure-method {
+            aspect-ratio: 674.278 / 263.888;
+        }
+
+        .figure-setup {
+            aspect-ratio: 722.051 / 539.149;
+        }
+
+        .figure-rgbres {
+            aspect-ratio: 1359.4756 / 546.884;
+        }
+
+        .table-wrap {
+            margin: 1.35rem 0 2.25rem 0;
+            overflow-x: visible;
+        }
+
+        table {
+            background: #fff;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+            table-layout: fixed;
+            width: 100%;
+        }
+
+        th,
+        td {
+            border: 1px solid var(--line);
+            line-height: 1.32;
+            overflow-wrap: break-word;
+            padding: 0.55rem 0.55rem;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        th {
+            background: #eef3f5;
+            color: #243548;
+            font-weight: 700;
+            hyphens: none;
+            overflow-wrap: normal;
+            white-space: nowrap;
+            word-break: keep-all;
+        }
+
+        td:first-child,
+        th:first-child {
+            text-align: left;
+            width: 34%;
+        }
+
+        .table-wrap table thead th:first-child {
+            text-align: left !important;
+        }
+
+        .table-wrap table thead th:not(:first-child) {
+            text-align: center !important;
+        }
+
+        .task-table {
+            font-size: 0.84rem;
+        }
+
+        .task-table th:first-child,
+        .task-table td:first-child {
+            white-space: nowrap;
+            width: 52%;
+        }
+
+        .task-table th:nth-child(2),
+        .task-table td:nth-child(2) {
+            width: 30%;
+        }
+
+        .task-table th:nth-child(2),
+        .task-table td:nth-child(2) {
+            text-align: left !important;
+        }
+
+        .task-table th:nth-child(3),
+        .task-table td:nth-child(3) {
+            width: 18%;
+        }
+
+        .comparison-table th:first-child,
+        .comparison-table td:first-child {
+            width: 48%;
+        }
+
+        .comparison-table th:nth-child(2),
+        .comparison-table td:nth-child(2) {
+            width: 7%;
+        }
+
+        .comparison-table th:nth-child(3),
+        .comparison-table td:nth-child(3) {
+            width: 6%;
+        }
+
+        .comparison-table th:nth-child(4),
+        .comparison-table td:nth-child(4) {
+            width: 9%;
+        }
+
+        .comparison-table th:nth-child(5),
+        .comparison-table td:nth-child(5) {
+            width: 14%;
+        }
+
+        .comparison-table th:nth-child(6),
+        .comparison-table td:nth-child(6) {
+            width: 15%;
+        }
+
+        .generalization-table th:first-child,
+        .generalization-table td:first-child {
+            width: 52%;
+        }
+
+        .generalization-table th:nth-child(2),
+        .generalization-table td:nth-child(2) {
+            width: 13%;
+        }
+
+        .generalization-table th:nth-child(3),
+        .generalization-table td:nth-child(3) {
+            width: 16%;
+        }
+
+        .generalization-table th:nth-child(4),
+        .generalization-table td:nth-child(4) {
+            width: 19%;
+        }
+
+        .comparison-table th:first-child,
+        .comparison-table td:first-child,
+        .comparison-table th:nth-child(2),
+        .comparison-table td:nth-child(2),
+        .residual-table th:first-child,
+        .residual-table td:first-child,
+        .residual-table th:nth-child(2),
+        .residual-table td:nth-child(2) {
+            padding-left: 0.35rem;
+            padding-right: 0.35rem;
+        }
+
+        .residual-table th:first-child,
+        .residual-table td:first-child {
+            width: 25%;
+        }
+
+        .residual-table th:nth-child(2),
+        .residual-table td:nth-child(2) {
+            width: 14%;
+        }
+
+        .additional-results-table {
+            font-size: 0.84rem;
+        }
+
+        .additional-results-table th {
+            font-size: 0.78rem;
+            white-space: nowrap;
+        }
+
+        .additional-results-table th,
+        .additional-results-table td {
+            padding-left: 0.38rem;
+            padding-right: 0.38rem;
+        }
+
+        .additional-results-table th:first-child,
+        .additional-results-table td:first-child {
+            width: 31%;
+        }
+
+        .additional-results-table th:nth-child(2),
+        .additional-results-table td:nth-child(2),
+        .additional-results-table th:nth-child(4),
+        .additional-results-table td:nth-child(4) {
+            width: 13%;
+        }
+
+        .additional-results-table th:nth-child(3),
+        .additional-results-table td:nth-child(3),
+        .additional-results-table th:nth-child(5),
+        .additional-results-table td:nth-child(5) {
+            width: 16%;
+        }
+
+        .additional-results-table th:nth-child(6),
+        .additional-results-table td:nth-child(6) {
+            width: 11%;
+        }
+
+        .table-paren {
+            font-size: 0.62em;
+            white-space: nowrap;
+        }
+
+        .best {
+            color: var(--cool);
+            font-weight: 800;
+        }
+
+        .resource-row {
+            align-items: center;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin: 1.5rem 0 0 0;
+        }
+
+        pre {
+            border-radius: 8px;
+            overflow-x: auto;
+        }
+
+        footer {
+            border-top: 1px solid rgba(24, 35, 49, 0.08);
+        }
+
+        @media (max-width: 900px) {
+            .contribution-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .additional-demo-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 640px) {
+            .title {
+                font-size: 2.55rem;
+            }
+
+            .subtitle {
+                font-size: 1.12rem;
+            }
+
+            .contribution-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .additional-demo-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .demo-selector-row {
+                display: block;
+            }
+
+            .demo-selector-label {
+                line-height: 1;
+                margin-bottom: 0.45rem;
+                text-align: left;
+            }
+
+            .demo-tabs {
+                justify-content: center;
+            }
+
+            .demo-tab {
+                max-width: 100%;
+            }
+
+            .demo-prompt-box {
+                width: 100%;
+            }
+
+            table {
+                font-size: 0.78rem;
+            }
+
+            .task-table {
+                font-size: 0.66rem;
+            }
+
+            .task-table th:first-child,
+            .task-table td:first-child {
+                width: 58%;
+            }
+
+            .additional-results-table {
+                font-size: 0.66rem;
+            }
+
+            .additional-results-table th {
+                font-size: 0.58rem;
+            }
+
+            .additional-results-table .table-paren {
+                font-size: 0.62em;
+            }
+
+            th,
+            td {
+                padding: 0.42rem 0.32rem;
+            }
+
+            .video-modal {
+                padding: 2vh 3vw;
+            }
+
+        }
+    </style>
+</head>
+<body>
+    <div class="container blog hero" id="first-content">
+        <div class="blog-title no-cover">
+            <div class="blog-intro" style="text-align: center; max-width: 100%; margin: 0 auto;">
+                <p class="paper-kicker">Thermal-aware robotic manipulation</p>
+                <h1 class="title logo-title"><img src="assets/figures/logo.png" alt="Thermo-VLA"></h1>
+                <p class="subtitle">
+                    Thermal-Aware Vision-Language-Action Models with Gated Residual Fusion for Robotic Manipulation
+                </p>
+
+                <p class="author">
+                    Anonymous Authors
+                </p>
+
+                <div class="abstract">
+                    <p>
+                        Recent Vision-Language-Action (VLA) models have begun incorporating thermal sensing, but existing approaches typically treat thermal images as ordinary visual inputs, providing limited support for temperature-aware relational reasoning in manipulation. To address this limitation, we propose Thermo-VLA ...
+                    </p>
+                    <p>
+                        Detailed task descriptions, model design, data, code, and complete demonstrations will be released after the review process.
+                    </p>
+                </div>
+
+                <div class="info hero-links">
+                    <div class="hero-link-item">
+                        <a href="paper.pdf" class="button icon">Paper <i class="fa-solid fa-file-pdf"></i></a>
+                        <span class="link-status">(Coming Soon)</span>
+                    </div>
+                    <div class="hero-link-item">
+                        <a href="404.html" class="button icon">Arxiv <i class="fa-solid fa-file-lines"></i></a>
+                        <span class="link-status">(Coming Soon)</span>
+                    </div>
+                    <div class="hero-link-item">
+                        <a href="assets/appendix.pdf" class="button icon" target="_blank" rel="noopener">Appendix <i class="fa-solid fa-book-open"></i></a>
+                    </div>
+                    <div class="hero-link-item">
+                        <a href="404.html" class="button icon">Data <i class="fa-solid fa-database"></i></a>
+                        <span class="link-status">(Coming Soon)</span>
+                    </div>
+                    <div class="hero-link-item">
+                        <a href="404.html" class="button icon">Code <i class="fa-solid fa-code"></i></a>
+                        <span class="link-status">(Coming Soon)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section-band">
+        <div class="container blog main" id="results">
+
+            <h1 id="demonstrations">Demonstrations</h1>
+            <p class="demo-note">
+                This page shows a partial set of demonstrations. Please refer to the submitted supplementary videos for the complete demonstrations.
+            </p>
+            <div class="demo-shell">
+                <div class="demo-selector-panel">
+                    <div class="demo-selector-row">
+                        <div class="demo-selector-label">Task</div>
+                        <div class="demo-tabs demo-task-tabs" id="demo-task-tabs" aria-label="Demonstration tasks"></div>
+                    </div>
+                    <div class="demo-selector-row">
+                        <div class="demo-selector-label">Case</div>
+                        <div class="demo-tabs demo-option-tabs" id="demo-option-tabs" aria-label="Demonstration options"></div>
+                    </div>
+                    <div class="demo-selector-row demo-prompt-row">
+                        <div class="demo-selector-label" id="demo-prompt-label">Prompt:</div>
+                        <div class="demo-prompt-box" id="demo-prompt" role="note" aria-labelledby="demo-prompt-label"></div>
+                    </div>
+                    <div class="demo-legend" aria-hidden="true">
+                        <span class="demo-legend-primary">Comparison</span>
+                        <span class="demo-legend-generalization">Generalisation</span>
+                    </div>
+                </div>
+                <div class="demo-video-frame">
+                    <video id="demo-main-video" autoplay muted loop playsinline preload="metadata"></video>
+                </div>
+                <p class="demo-empty" id="demo-empty" hidden>No demonstration videos found.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="container blog main" id="citation">
+        <h1>Citation</h1>
+        <div class="review-notice">
+            <strong>Anonymous Review Notice</strong>
+            <p>This website and its supplementary materials(Appendix) are provided solely for anonymous peer review. All rights are reserved. The text, figures, videos, technical illustrations, and other original materials on this website may not be reproduced or redistributed without permission. The materials correspond to a manuscript currently under peer review.</p>
+        </div>
+    </div>
+
+    <div class="video-modal" id="video-modal" hidden>
+        <div class="video-modal-content" role="dialog" aria-modal="true" aria-label="Demonstration video">
+            <button class="video-modal-close" id="video-modal-close" type="button" aria-label="Close video modal">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <video id="video-modal-player" controls muted loop playsinline></video>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    <script src="demo_videos/manifest.js"></script>
+    <script>
+        (() => {
+            const manifestUrl = "demo_videos/manifest.json";
+            const mainVideo = document.getElementById("demo-main-video");
+            const taskTabs = document.getElementById("demo-task-tabs");
+            const optionTabs = document.getElementById("demo-option-tabs");
+            const promptBox = document.getElementById("demo-prompt");
+            const selectorPanel = document.querySelector(".demo-selector-panel");
+            const empty = document.getElementById("demo-empty");
+            const modal = document.getElementById("video-modal");
+            const modalVideo = document.getElementById("video-modal-player");
+            const modalClose = document.getElementById("video-modal-close");
+            const defaultPrompt = "Example: Pick up the target object and place it in the target area.";
+            // Edit the prompt text below. Each key should match a video filename in demo_videos.
+            const casePrompts = {
+                "Task2_cold_blue_bottle_final.mp4": "Pick up the cold object and place it on the black circular coaster.",
+                "Task2_cold_short_bottle_final.mp4": "Pick up the cold object and place it on the black circular coaster.",
+                "Task4_cold_to_yellow_final.mp4": "Pick up the cold object and place it on the yellow circular coaster.",
+                "Task4_hot_to_white_final.mp4": "Pick up the hot object and place it on the white circular coaster.",
+            };
+            let videos = [];
+            let taskGroups = [];
+            let activeTaskIndex = 0;
+            let activeOptionIndex = 0;
+            let activeVideo = null;
+
+            function playVideo(videoEl) {
+                const playPromise = videoEl.play();
+                if (playPromise) {
+                    playPromise.catch(() => {});
+                }
+            }
+
+            function getStartTime(videoEl) {
+                const startTime = Number(videoEl.dataset.start || videoEl.dataset.loopStart || 0);
+                return Number.isFinite(startTime) && startTime > 0 ? startTime : 0;
+            }
+
+            function getClipRange(videoEl) {
+                const startTime = getStartTime(videoEl);
+                const explicitEnd = Number(videoEl.dataset.end || 0);
+                const duration = Number(videoEl.dataset.duration || 0);
+                const endTime = Number.isFinite(explicitEnd) && explicitEnd > startTime
+                    ? explicitEnd
+                    : (Number.isFinite(duration) && duration > 0 ? startTime + duration : 0);
+
+                return { startTime, endTime };
+            }
+
+            function seekAndPlay(videoEl, startTime = 0) {
+                const seek = () => {
+                    if (startTime && Number.isFinite(videoEl.duration) && videoEl.duration > startTime) {
+                        videoEl.currentTime = startTime;
+                    }
+                    playVideo(videoEl);
+                };
+
+                if (videoEl.readyState >= 1) {
+                    seek();
+                } else {
+                    videoEl.addEventListener("loadedmetadata", seek, { once: true });
+                }
+            }
+
+            function keepClipRange(videoEl) {
+                const { startTime, endTime } = getClipRange(videoEl);
+                const hasStart = startTime && Number.isFinite(videoEl.duration) && videoEl.duration > startTime;
+                const hasEnd = endTime && Number.isFinite(videoEl.duration) && videoEl.duration > endTime;
+
+                if (hasStart && videoEl.currentTime < startTime - 0.25) {
+                    videoEl.currentTime = startTime;
+                }
+
+                if (hasEnd && videoEl.currentTime >= endTime) {
+                    videoEl.currentTime = startTime;
+                    playVideo(videoEl);
+                }
+            }
+
+            function setActiveVideo(video) {
+                if (!video) return;
+
+                activeVideo = video;
+                mainVideo.src = video.src;
+                mainVideo.load();
+                promptBox.textContent = Object.prototype.hasOwnProperty.call(casePrompts, video.name)
+                    ? casePrompts[video.name]
+                    : defaultPrompt;
+                promptBox.classList.toggle("generalization-case", video.type === "generalization");
+                playVideo(mainVideo);
+            }
+
+            function openModal(videoSource = activeVideo, startTime = 0, options = {}) {
+                const src = typeof videoSource === "string" ? videoSource : videoSource && videoSource.src;
+                if (!src) return;
+
+                modal.classList.toggle("video-modal-natural", Boolean(options.naturalSize));
+                modalVideo.dataset.start = startTime ? String(startTime) : "";
+                modalVideo.dataset.end = options.endTime ? String(options.endTime) : "";
+                modalVideo.src = src;
+                modalVideo.load();
+                modal.hidden = false;
+                document.body.style.overflow = "hidden";
+                seekAndPlay(modalVideo, startTime);
+                modalClose.focus();
+            }
+
+            function closeModal() {
+                modal.hidden = true;
+                modal.classList.remove("video-modal-natural");
+                modalVideo.pause();
+                modalVideo.dataset.start = "";
+                modalVideo.dataset.end = "";
+                modalVideo.removeAttribute("src");
+                modalVideo.load();
+                document.body.style.overflow = "";
+            }
+
+            function getTaskInfo(video) {
+                const baseName = video.name.replace(/\.[^/.]+$/, "");
+                const match = baseName.match(/^Task(\d+)[_-](.+)$/i);
+                if (!match) return null;
+
+                return {
+                    task: `Task${match[1]}`,
+                    order: Number(match[1]),
+                    option: match[2],
+                };
+            }
+
+            function toRoman(number) {
+                const numerals = [
+                    [1000, "M"],
+                    [900, "CM"],
+                    [500, "D"],
+                    [400, "CD"],
+                    [100, "C"],
+                    [90, "XC"],
+                    [50, "L"],
+                    [40, "XL"],
+                    [10, "X"],
+                    [9, "IX"],
+                    [5, "V"],
+                    [4, "IV"],
+                    [1, "I"],
+                ];
+                let value = Number(number);
+                let result = "";
+
+                if (!Number.isFinite(value) || value <= 0) return String(number);
+
+                value = Math.floor(value);
+                numerals.forEach(([arabic, roman]) => {
+                    while (value >= arabic) {
+                        result += roman;
+                        value -= arabic;
+                    }
+                });
+
+                return result;
+            }
+
+            function getCaseType(option) {
+                return /(?:^|_)final2?$/i.test(option) ? "primary" : "generalization";
+            }
+
+            function getCaseSortScore(video) {
+                const finalMatch = video.label.match(/(?:^|_)final(2)?$/i);
+                const typeScore = video.type === "primary" ? 0 : 1;
+                const finalScore = finalMatch ? (finalMatch[1] ? 1 : 0) : 9;
+                return [typeScore, finalScore, video.label.toLowerCase()];
+            }
+
+            function compareCases(a, b) {
+                const aScore = getCaseSortScore(a);
+                const bScore = getCaseSortScore(b);
+
+                for (let index = 0; index < aScore.length; index += 1) {
+                    if (aScore[index] < bScore[index]) return -1;
+                    if (aScore[index] > bScore[index]) return 1;
+                }
+
+                return 0;
+            }
+
+            function buildTaskGroups() {
+                const groups = new Map();
+
+                videos.forEach((video) => {
+                    const info = getTaskInfo(video);
+                    if (!info) return;
+                    if (!groups.has(info.task)) {
+                        groups.set(info.task, {
+                            label: `Task ${toRoman(info.order)}`,
+                            order: info.order,
+                            videos: [],
+                        });
+                    }
+
+                    const type = getCaseType(info.option);
+
+                    groups.get(info.task).videos.push({
+                        ...video,
+                        label: info.option,
+                        type,
+                    });
+                });
+
+                return Array.from(groups.values())
+                    .map((group) => ({
+                        ...group,
+                        videos: group.videos.sort(compareCases).slice(0, 2).map((video, index) => ({
+                            ...video,
+                            caseLabel: `Case${index + 1}`,
+                        })),
+                    }))
+                    .sort((a, b) => a.order - b.order);
+            }
+
+            function updateTaskButtons() {
+                taskTabs.querySelectorAll(".demo-task-tab").forEach((button, index) => {
+                    const isActive = index === activeTaskIndex;
+                    button.classList.toggle("active", isActive);
+                    button.setAttribute("aria-pressed", String(isActive));
+                });
+            }
+
+            function updateOptionButtons() {
+                optionTabs.querySelectorAll(".demo-option-tab").forEach((button, index) => {
+                    const isActive = index === activeOptionIndex;
+                    button.classList.toggle("active", isActive);
+                    button.setAttribute("aria-pressed", String(isActive));
+                });
+            }
+
+            function selectOption(optionIndex) {
+                const group = taskGroups[activeTaskIndex];
+                if (!group || !group.videos[optionIndex]) return;
+
+                activeOptionIndex = optionIndex;
+                updateOptionButtons();
+                setActiveVideo(group.videos[optionIndex]);
+            }
+
+            function renderOptions(taskIndex) {
+                const group = taskGroups[taskIndex];
+                optionTabs.innerHTML = "";
+                if (!group) return;
+
+                group.videos.forEach((video, optionIndex) => {
+                    const button = document.createElement("button");
+                    button.type = "button";
+                    button.className = `demo-tab demo-option-tab ${video.type}-case`;
+                    button.textContent = video.caseLabel;
+                    button.title = video.label;
+                    button.setAttribute("aria-pressed", "false");
+                    button.addEventListener("click", () => selectOption(optionIndex));
+                    optionTabs.appendChild(button);
+                });
+            }
+
+            function selectTask(taskIndex) {
+                if (!taskGroups[taskIndex]) return;
+
+                activeTaskIndex = taskIndex;
+                activeOptionIndex = 0;
+                updateTaskButtons();
+                renderOptions(taskIndex);
+                selectOption(0);
+            }
+
+            function renderTabs() {
+                taskTabs.innerHTML = "";
+                optionTabs.innerHTML = "";
+
+                taskGroups.forEach((group, taskIndex) => {
+                    const button = document.createElement("button");
+                    button.type = "button";
+                    button.className = "demo-tab demo-task-tab";
+                    button.textContent = group.label;
+                    button.setAttribute("aria-pressed", "false");
+                    button.addEventListener("click", () => selectTask(taskIndex));
+                    taskTabs.appendChild(button);
+                });
+            }
+
+            async function initDemonstrations() {
+                videos = Array.isArray(window.DEMO_VIDEOS) ? window.DEMO_VIDEOS : [];
+
+                if (!videos.length) {
+                    try {
+                        const response = await fetch(manifestUrl);
+                        if (!response.ok) throw new Error(`Unable to load ${manifestUrl}`);
+                        const manifest = await response.json();
+                        videos = Array.isArray(manifest.videos) ? manifest.videos : [];
+                    } catch (error) {
+                        videos = [];
+                    }
+                }
+
+                taskGroups = buildTaskGroups();
+
+                if (!taskGroups.length) {
+                    empty.hidden = false;
+                    mainVideo.hidden = true;
+                    selectorPanel.hidden = true;
+                    return;
+                }
+
+                renderTabs();
+                selectTask(0);
+            }
+
+            mainVideo.addEventListener("click", () => openModal(activeVideo));
+            document.querySelectorAll(".additional-demo-card").forEach((card) => {
+                const video = card.querySelector("video");
+                const getClip = () => getClipRange(video);
+                const { startTime, endTime } = getClip();
+
+                if (startTime || endTime) {
+                    seekAndPlay(video, startTime);
+                    video.addEventListener("timeupdate", () => keepClipRange(video));
+                }
+
+                card.addEventListener("click", () => {
+                    const clip = getClip();
+                    openModal(video.currentSrc || video.getAttribute("src"), clip.startTime, {
+                        endTime: clip.endTime,
+                        naturalSize: true,
+                    });
+                });
+                card.addEventListener("keydown", (event) => {
+                    if (event.key === "Enter" || event.key === " ") {
+                        event.preventDefault();
+                        const clip = getClip();
+                        openModal(video.currentSrc || video.getAttribute("src"), clip.startTime, {
+                            endTime: clip.endTime,
+                            naturalSize: true,
+                        });
+                    }
+                });
+            });
+            modalVideo.addEventListener("timeupdate", () => keepClipRange(modalVideo));
+            modalClose.addEventListener("click", closeModal);
+            modal.addEventListener("click", (event) => {
+                if (event.target === modal) {
+                    closeModal();
+                }
+            });
+            document.addEventListener("keydown", (event) => {
+                if (event.key === "Escape" && !modal.hidden) {
+                    closeModal();
+                }
+            });
+
+            initDemonstrations();
+        })();
+    </script>
+    <script src="clarity-template/clarity/clarity.js"></script>
+    <script src="clarity-template/assets/scripts/main.js"></script>
+</body>
+</html>
